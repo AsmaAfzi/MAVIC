@@ -104,13 +104,13 @@ def predict_demand_and_orders(
     current_stock_df = pd.read_csv(current_stock_csv)
 
     # Convert future_ops_data to DataFrame
-    future_ops_df = pd.DataFrame([future_ops_data])
-    future_ops_df[DATE_COLUMN]= pd.Timestamp(future_ops_df[DATE_COLUMN])
+    #future_ops_df = pd.DataFrame([future_ops_data])
+    #future_ops_df[DATE_COLUMN]= pd.Timestamp(future_ops_df[DATE_COLUMN])
 
     # Call predict_and_suggest_orders() to generate order suggestions
     order_suggestions_df = predict_and_suggest_orders(
         model=model,  # Assuming 'lgbm' is your trained model
-        future_ops_data=future_ops_df,
+        future_ops_data=future_ops_data,
         latest_demand_hist=latest_demand_hist_df,
         products_info=products_info_df,
         current_stock=current_stock_df,
@@ -123,6 +123,66 @@ def predict_demand_and_orders(
 
     return order_suggestions
 
+def parse_json_string_to_dataframe(json_string):
+  """
+  Parses a JSON string (representing a single record) into a
+  single-row Pandas DataFrame.
+
+  It specifically converts the 'Week_Start_Date' field into a
+  Pandas Timestamp object.
+
+  Args:
+    json_string (str): A JSON formatted string containing the data
+                       for one record.
+
+  Returns:
+    pandas.DataFrame: A DataFrame containing the single record, with
+                      'Week_Start_Date' correctly typed as Timestamp.
+                      Returns None if input is not a valid JSON string,
+                      or if processing fails.
+  """
+  if not isinstance(json_string, str):
+      print("Error: Input must be a string.")
+      return None
+
+  # Step 1: Parse the JSON string into a Python dictionary
+  try:
+      data_dict = json.loads(json_string)
+  except json.JSONDecodeError as e:
+      print(f"Error: Invalid JSON string provided: {e}")
+      return None
+  except Exception as e:
+      print(f"An unexpected error occurred during JSON parsing: {e}")
+      return None
+
+  # Check if the parsed result is a dictionary (expected for a single record)
+  if not isinstance(data_dict, dict):
+      print("Error: Parsed JSON content is not a dictionary (expected single record).")
+      return None
+
+  # Step 2: Create DataFrame from the parsed dictionary
+  try:
+      # Wrap dict in a list as DataFrame expects list of records for rows
+      df = pd.DataFrame([data_dict])
+  except Exception as e:
+      print(f"Error creating DataFrame from parsed dictionary: {e}")
+      return None
+
+  # Step 3: Check if the required date column exists
+  if 'Week_Start_Date' not in df.columns:
+      print("Error: 'Week_Start_Date' column not found in the parsed JSON data.")
+      return None
+
+  # Step 4: Convert the 'Week_Start_Date' column to pandas Timestamp objects
+  try:
+      df['Week_Start_Date'] = pd.to_datetime(df['Week_Start_Date'])
+  except Exception as e:
+      print(f"Error converting 'Week_Start_Date' to Timestamp: {e}")
+      # Depending on requirements, you might return None or the DataFrame
+      # with the original string type here. Returning None for clarity.
+      return None
+
+  return df
 
 st.title("📄 Upload CSV for Analysis")
 
@@ -134,5 +194,5 @@ current_stock = st.file_uploader("Choose a CSV file", type="csv", key='c')
 
 #st.subheader("📊 Preview of Uploaded Data")
 if (st.button("calc")):
-    text= predict_demand_and_orders(json.loads(ops), lastest_hists, products_df, current_stock)
+    text= predict_demand_and_orders(parse_json_string_to_dataframe(ops), lastest_hists, products_df, current_stock)
     st.code(text)
