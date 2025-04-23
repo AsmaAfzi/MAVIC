@@ -1,24 +1,19 @@
 import streamlit as st
-import joblib
 import pandas as pd
 
-# Load the trained model
-model = joblib.load("model.pkl")
 
-st.title("🍽️ Hotel F&B Demand Predictor")
-st.write("Predict food demand based on inputs like season, events, etc.")
+st.title("📄 Upload CSV for Analysis")
 
-# Input fields
-guest_count = st.number_input("Guest Count", min_value=0)
-temperature = st.number_input("Temperature (°C)")
-event = st.selectbox("Is there a major event?", ["No", "Yes"])
+# Upload CSV
+uploaded_file = st.file_uploader("Choose a CSV file", type="csv")
 
-# Convert inputs to a DataFrame
-event_encoded = 1 if event == "Yes" else 0
-input_df = pd.DataFrame([[guest_count, temperature, event_encoded]],
-                        columns=["guest_count", "temperature", "event_flag"])
+if uploaded_file is not None:
+    # Read and display CSV
+    df = pd.read_csv(uploaded_file)
+    st.success("CSV uploaded successfully!")
+    
+    st.subheader("📊 Preview of Uploaded Data")
+    st.dataframe(df)
 
-# Predict and display
-if st.button("Predict Demand"):
-    prediction = model.predict(input_df)
-    st.success(f"Predicted demand: {prediction[0]:.2f} units")
+    # (Optional) Use the CSV for predictions or analysis
+    # Example: st.write(model.predict(df[model_features]))
