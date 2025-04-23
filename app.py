@@ -105,6 +105,7 @@ def predict_demand_and_orders(
 
     # Convert future_ops_data to DataFrame
     future_ops_df = pd.DataFrame([future_ops_data])
+    future_ops_df[DATE_COLUMN]= pd.Timestamp(future_ops_df[DATE_COLUMN])
 
     # Call predict_and_suggest_orders() to generate order suggestions
     order_suggestions_df = predict_and_suggest_orders(
