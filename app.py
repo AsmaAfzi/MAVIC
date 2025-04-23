@@ -127,9 +127,9 @@ st.title("📄 Upload CSV for Analysis")
 
 ops= st.text_input("ops: ", type="default")
 # Upload CSV
-products_df = st.file_uploader("Choose a CSV file", type="csv")
-lastest_hists = st.file_uploader("Choose a CSV file", type="csv")
-current_stock = st.file_uploader("Choose a CSV file", type="csv")
+products_df = st.file_uploader("Choose a CSV file", type="csv", key="p")
+lastest_hists = st.file_uploader("Choose a CSV file", type="csv", key="l")
+current_stock = st.file_uploader("Choose a CSV file", type="csv", key='c')
 
 #st.subheader("📊 Preview of Uploaded Data")
 if (st.button("calc")):
