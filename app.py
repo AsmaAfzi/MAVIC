@@ -193,7 +193,7 @@ with(st.form("form1")):
     lastest_hists = st.file_uploader("Choose a CSV file", type="csv", key="l")
     current_stock = st.file_uploader("Choose a CSV file", type="csv", key='c')
 
-    submit= st.button("calc")
+    submit= st.form_submit_button("calc")
 
 if(submit):
     text= predict_demand_and_orders(parse_json_string_to_dataframe(ops), lastest_hists, products_df, current_stock)
