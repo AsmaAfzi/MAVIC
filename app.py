@@ -186,13 +186,15 @@ def parse_json_string_to_dataframe(json_string):
 
 st.title("📄 Upload CSV for Analysis")
 
-ops= st.text_input("ops: ", type="default")
+with(st.form("form1")):
+    ops= st.text_input("ops: ", type="default")
 # Upload CSV
-products_df = st.file_uploader("Choose a CSV file", type="csv", key="p")
-lastest_hists = st.file_uploader("Choose a CSV file", type="csv", key="l")
-current_stock = st.file_uploader("Choose a CSV file", type="csv", key='c')
+    products_df = st.file_uploader("Choose a CSV file", type="csv", key="p")
+    lastest_hists = st.file_uploader("Choose a CSV file", type="csv", key="l")
+    current_stock = st.file_uploader("Choose a CSV file", type="csv", key='c')
 
-#st.subheader("📊 Preview of Uploaded Data")
-if (st.button("calc")):
+    submit= st.button("calc")
+
+if(submit):
     text= predict_demand_and_orders(parse_json_string_to_dataframe(ops), lastest_hists, products_df, current_stock)
     st.code(text)
