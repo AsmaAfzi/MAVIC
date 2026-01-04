@@ -1,11 +1,14 @@
 # AI-Powered F&B Demand Forecasting for UAE Hotels
+---
 
 ## 🌐 Live Demo  
 🔗 [Click here to try the project](https://6wtjnjtpwcojnvbidd9ajz.streamlit.app/)
 
+
 ## 📂 Complete Project Link
 🔗 [Complete project available here](https://github.com/N0ZA/AI-Powered-F-B-Demand-Forecasting-for-Hotels)
 
+---
 
 ## 🚀 Project Overview
 
